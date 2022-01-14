@@ -1,0 +1,21 @@
+{
+  "name": "apply-exercise",
+  "version": "1.0.0",
+  "description": "Exercise for apply a job",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sahapat/Apply-Exercise.git"
+  },
+  "author": "Sahapat Thong-on",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sahapat/Apply-Exercise/issues"
+  },
+  "homepage": "https://github.com/Sahapat/Apply-Exercise#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "puppeteer": "^13.0.1",
+    "puppeteer-core": "^13.0.1"
+  }
+}

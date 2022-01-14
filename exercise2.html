@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 2</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+</head>
+<body>
+    <div id="app">
+        <select v-model="filterCategory" @change="onFilerCategoryChange">
+            <option
+                v-for="(category, index) in filterCategoryList"
+                :key="index"
+                :value="category">
+                {{ category }}
+            </option>
+        </select>
+        <table v-if="!isFetching">
+            <thead>
+                <tr>
+                    <th>API</th>
+                    <th>AUTH</th>
+                    <th>Category</th>
+                    <th>Cors</th>
+                    <th>Description</th>
+                    <th>HTTPS</th>
+                    <th>LINK</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr v-for="(item, index) in entries"
+                    :key="index">
+                    <td>{{ item.API }}</td>
+                    <td>{{ item.Auth }}</td>
+                    <td>{{ item.Category }}</td>
+                    <td>{{ item.Cors }}</td>
+                    <td>{{ item.Description }}</td>
+                    <td>{{ item.HTTPS }}</td>
+                    <td>{{ item.Link }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div v-else>Fetching...</div>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+
+            data () {
+                return {
+                    filterCategory: 'All',
+                    categories: [],
+                    entries: [],
+                    isFetching: false
+                }
+            },
+
+            computed: {
+                filterCategoryList () {
+                    return ['All', ...this.categories]
+                }
+            },
+
+            mounted () {
+                this.initialize()
+            },
+
+            methods: {
+                async initialize () {
+                    this.isFetching = true
+                    this.categories = await this.fetchingCategories()
+                    this.entries = await this.fetchinEntriesByCategory(this.filterCategory)
+                    this.isFetching = false
+                },
+
+                async getFetchResponse (url) {
+                    const response = await fetch(url)
+                    return await response.json()
+                },
+
+                async fetchingCategories () {
+                    return this.getFetchResponse('https://api.publicapis.org/categories')
+                },
+
+                async fetchinEntriesByCategory (filterCategory) {
+                    let fetchUrl = 'https://api.publicapis.org/entries'
+                    if (filterCategory !== 'All') {
+                        fetchUrl = `${fetchUrl}?category=${filterCategory}`
+                    }
+                    const entriesObj = await this.getFetchResponse(fetchUrl)
+                    return entriesObj.entries
+                },
+
+                async onFilerCategoryChange () {
+                    this.entries = await this.fetchinEntriesByCategory(this.filterCategory)
+                }
+            }
+        })
+    </script>
+</body>
+</html>
