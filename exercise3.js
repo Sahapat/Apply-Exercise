@@ -1,5 +1,4 @@
 import puppeteer from 'puppeteer'
-import * as cheerio from 'cheerio';
 
 (async () => {
     const fundName = process.argv.slice(2)
@@ -9,7 +8,10 @@ import * as cheerio from 'cheerio';
         return
     }
 
-    const browser = await puppeteer.launch()
+    const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--use-gl=egl']
+    })
     const page = await browser.newPage()
     await page.goto('https://codequiz.azurewebsites.net/')
     await page.click('input[value=Accept]')
@@ -24,6 +26,7 @@ import * as cheerio from 'cheerio';
     const targetContentIndexStart = htmlTableString.indexOf(fundName)
     if (targetContentIndexStart === -1) {
         console.log(`not found Nav with fund name ${fundName}`)
+        return await browser.close()
     }
     focusHtmlString = focusHtmlString.slice(targetContentIndexStart)
     const resultContentIndexStart = focusHtmlString.indexOf('<td>')
@@ -38,5 +41,5 @@ import * as cheerio from 'cheerio';
 
     console.log(result)
 
-    await browser.close();
+    await browser.close()
 })()
